@@ -12,6 +12,7 @@ class WhiteCodelReels extends GetView<WhiteCodelReelsController> {
   final List<String>? videoList;
   final Widget? loader;
   final bool isCaching;
+  final int initialIndex;
   final Widget Function(
       BuildContext context,
       int index,
@@ -23,6 +24,7 @@ class WhiteCodelReels extends GetView<WhiteCodelReelsController> {
       {super.key,
       required this.context,
       this.videoList,
+      this.initialIndex = 0,
       this.loader,
       this.isCaching = false,
       this.builder});
@@ -31,7 +33,9 @@ class WhiteCodelReels extends GetView<WhiteCodelReelsController> {
   Widget build(BuildContext context) {
     Get.delete<WhiteCodelReelsController>();
     Get.lazyPut<WhiteCodelReelsController>(() => WhiteCodelReelsController(
-        reelsVideoList: videoList ?? [], isCaching: isCaching));
+        reelsVideoList: videoList ?? [],
+        isCaching: isCaching,
+        initialPageIndex: initialIndex));
     return Scaffold(
       backgroundColor: Colors.black,
       body: Obx(

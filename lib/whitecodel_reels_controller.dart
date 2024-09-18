@@ -65,12 +65,17 @@ class WhiteCodelReelsController extends GetxController
   // Caching video at index
   List<String> caching = [];
 
+  // Initial page index to start reels from a specific index
+  int initialPageIndex = 0;
+
   // pageCount
   RxInt pageCount = 0.obs;
 
   // Constructor
   WhiteCodelReelsController(
-      {required this.reelsVideoList, required this.isCaching});
+      {required this.reelsVideoList,
+      required this.isCaching,
+      required this.initialPageIndex});
 
   // Lifecycle method for handling app lifecycle state changes
   @override
@@ -120,7 +125,7 @@ class WhiteCodelReelsController extends GetxController
   // Initialize video service and load videos
   initService() async {
     await addVideosController();
-    int myindex = 0;
+    int myindex = initialPageIndex;
     if (!videoPlayerControllerList[myindex].value.isInitialized) {
       cacheVideo(myindex);
       await videoPlayerControllerList[myindex].initialize();
@@ -130,7 +135,7 @@ class WhiteCodelReelsController extends GetxController
     videoPlayerControllerList[myindex].play();
     refreshView();
     // listenEvents(myindex);
-    await initNearByVideos(0);
+    await initNearByVideos(initialPageIndex);
     loading.value = false;
   }
 
