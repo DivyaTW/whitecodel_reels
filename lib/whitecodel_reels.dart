@@ -130,7 +130,7 @@ class VideoFullScreenPage extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: FittedBox(
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
             child: SizedBox(
               width: MediaQuery.of(context).size.height *
                   videoPlayerController.value.aspectRatio,

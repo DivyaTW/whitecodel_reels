@@ -10,7 +10,7 @@ import 'video_controller_service.dart';
 class WhiteCodelReelsController extends GetxController
     with GetTickerProviderStateMixin, WidgetsBindingObserver {
   // Page controller for managing pages of videos
-  PageController pageController = PageController(viewportFraction: 0.99999);
+  late PageController pageController;
 
   // List of video player controllers
   RxList<VideoPlayerController> videoPlayerControllerList =
@@ -93,6 +93,8 @@ class WhiteCodelReelsController extends GetxController
   @override
   void onInit() {
     super.onInit();
+    pageController = PageController(
+        viewportFraction: 0.99999, initialPage: initialPageIndex);
     videoList.addAll(reelsVideoList);
     // Initialize animation controller
     animationController =
@@ -126,11 +128,20 @@ class WhiteCodelReelsController extends GetxController
   initService() async {
     await addVideosController();
     int myindex = initialPageIndex;
-    if (!videoPlayerControllerList[myindex].value.isInitialized) {
-      cacheVideo(myindex);
-      await videoPlayerControllerList[myindex].initialize();
-      increasePage(myindex + 1);
+    List<Future> futures = [];
+    for (int i = 0; i <= initialPageIndex; i++) {
+      if (!videoPlayerControllerList[i].value.isInitialized) {
+        cacheVideo(i);
+        futures.add(videoPlayerControllerList[i].initialize());
+        if (i == myindex) {
+          await pageController.animateToPage(myindex,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeIn);
+        }
+        increasePage(i + 1);
+      }
     }
+    await Future.wait(futures);
     animationController.repeat();
     videoPlayerControllerList[myindex].play();
     refreshView();
